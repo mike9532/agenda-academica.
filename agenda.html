@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Acadêmica - Anhanguera</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+<!-- =========================
+     CABEÇALHO
+========================== -->
+<header>
+    <div class="navbar">
+        <h1>AGENDA ACADÊMICA</h1>
+        <button type="button" id="logout-button" onclick="logout()" aria-label="Sair da conta" title="Sair da conta">
+            <svg class="logout-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Sair</span>
+        </button>
+    </div>
+</header>
+
+<!-- =========================
+     CONTEÚDO PRINCIPAL
+========================== -->
+<main>
+
+    <!-- =========================
+         LOGO
+    ========================== -->
+    <section class="logo-section">
+        <img src="logo_anhanguera.png" alt="Logo Anhanguera" class="logo">
+        <h2 class="portal-title">Portal Acadêmico</h2>
+    </section>
+
+    <!-- =========================
+         ABAS
+    ========================== -->
+    <section class="tabs">
+        <button class="tab-button" onclick="showTab('matutino')">Matutino</button>
+        <button class="tab-button active" onclick="showTab('noturno')">Noturno</button>
+    </section>
+
+    <!-- =========================
+         PESQUISA
+    ========================== -->
+    <section class="search-section">
+        <input type="text" id="search-input" placeholder="Pesquisar curso...">
+        <button onclick="searchCourse()">🔍</button>
+        <p id="search-message"></p>
+    </section>
+
+    <!-- =========================
+         GRADE MATUTINA
+    ========================== -->
+    <section id="matutino" class="tab-content">
+        <h3 class="grade-title">Grade Horária - Matutino</h3>
+        <p>Ainda não possui a grade horária no site. Aguarde atualizações.</p>
+    </section>
+
+    <!-- =========================
+         GRADE NOTURNA
+    ========================== -->
+    <section id="noturno" class="tab-content active">
+        <h3 class="grade-title">Grade Horária - Noturno</h3>
+        <p id="lab-edit-hint" class="lab-edit-hint" style="display: none;">
+            Como coordenador, você gerencia as aulas, laboratórios e eventos abaixo.
+        </p>
+
+        <!-- =========================
+             NAVEGAÇÃO DO COORDENADOR
+        ========================== -->
+        <div id="coordenador-nav" class="coordenador-nav" style="display: none;">
+            <button type="button" class="btn-painel" onclick="mostrarEditarGrade()">Editar Grade</button>
+            <button type="button" class="btn-painel" onclick="mostrarGerenciarEventos()">Gerenciar Eventos</button>
+        </div>
+
+        <!-- =========================
+             GRADE DE AULAS
+        ========================== -->
+        <div id="ads-grade">
+            <div class="tabela-wrapper">
+            <table class="schedule tabela-admin tabela-grade">
+                <thead>
+                    <tr>
+                        <th>Dia da Semana</th>
+                        <th>Horário</th>
+                        <th>Turma / Sem.</th>
+                        <th>Disciplina</th>
+                        <th>Professor</th>
+                        <th>Sala</th>
+                        <th>Laboratório</th>
+                        <th>Datas da Aula / Lab</th>
+                        <th class="col-acoes" style="display: none;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-body">
+                </tbody>
+            </table>
+            </div>
+
+            <!-- =========================
+                 PAINEL DO COORDENADOR
+            ========================== -->
+            <div id="coordenador-panel" style="display: none;">
+                <h3>Administração da Grade</h3>
+
+                <!-- =========================
+                     PAINEL: EDITAR GRADE
+                     (Cadastrar/Editar Aula + Administração de Laboratórios)
+                ========================== -->
+                <div id="painel-editar-grade" class="coordenador-subpanel" style="display: none;">
+                    <button type="button" class="btn-voltar-painel" onclick="mostrarPainelInicial()">← Voltar ao Painel</button>
+
+                <!-- =========================
+                     CADASTRAR / EDITAR AULA
+                ========================== -->
+                <div class="coordenador-box">
+                    <h4 id="form-aula-title">Cadastrar Nova Aula</h4>
+                    <div class="coordenador-form">
+                        
+                        <input type="hidden" id="aula-id-editar">
+
+                        <label for="nova-aula-turma">Turma / Semestre:</label>
+                        <select id="nova-aula-turma">
+                            <option value="">Carregando turmas...</option>
+                        </select>
+
+                        <!-- CAMPO DE DISCIPLINA LIVRE (TEXTO) -->
+                        <label for="nova-aula-disciplina">Nome da Disciplina / Matéria:</label>
+                        <input type="text" id="nova-aula-disciplina" placeholder="Ex: Programação Orientada a Objetos...">
+
+                        <label for="nova-aula-professor">Professor:</label>
+                        <select id="nova-aula-professor">
+                            <option value="">Carregando professores...</option>
+                        </select>
+
+                        <label for="nova-aula-sala">Sala:</label>
+                        <select id="nova-aula-sala">
+                            <option value="">Selecione a sala</option>
+                        </select>
+
+                        <label for="nova-aula-laboratorio">Laboratório:</label>
+                        <select id="nova-aula-laboratorio">
+                            <option value="">Selecione o laboratório</option>
+                        </select>
+
+                        <label for="nova-aula-dia">Dia da Semana:</label>
+                        <select id="nova-aula-dia">
+                            <option value="Segunda-feira">Segunda-feira</option>
+                            <option value="Terça-feira">Terça-feira</option>
+                            <option value="Quarta-feira">Quarta-feira</option>
+                            <option value="Quinta-feira">Quinta-feira</option>
+                            <option value="Sexta-feira">Sexta-feira</option>
+                            <option value="Sábado">Sábado</option>
+                        </select>
+
+                        <div style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label for="nova-aula-inicio">Início:</label>
+                                <input type="time" id="nova-aula-inicio">
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="nova-aula-fim">Término:</label>
+                                <input type="time" id="nova-aula-fim">
+                            </div>
+                        </div>
+
+                        <!-- DATAS REAIS DE LABORATÓRIO DESTA AULA -->
+                        <div class="datas-lab-bloco">
+                            <h5>Datas da aula / laboratório</h5>
+                            <p class="datas-lab-ajuda">
+                                Cadastre aqui as datas reais desta aula. Se a aula tiver laboratório,
+                                a mesma data vale para a aula e para o laboratório.
+                                O dia da semana não gera datas automaticamente.
+                                As datas só são gravadas ao clicar em salvar a aula.
+                            </p>
+                            <div class="datas-lab-input">
+                                <input type="date" id="nova-aula-data-lab" aria-label="Nova data da aula">
+                                <button type="button" onclick="adicionarDataFormulario()">+ Adicionar data</button>
+                            </div>
+                            <div id="nova-aula-datas-lista" class="datas-lab-lista"></div>
+                            <p id="nova-aula-datas-message"></p>
+                        </div>
+
+                        <button type="button" onclick="salvarAula()" id="btn-salvar-aula">Cadastrar Aula</button>
+                        <button type="button" onclick="cancelarEdicaoAula()" id="btn-cancelar-aula" style="display: none; background-color: #777;">Cancelar Edição</button>
+                        
+                        <p id="nova-aula-message"></p>
+                    </div>
+                </div>
+
+                <!-- =========================
+                     STATUS DOS LABORATÓRIOS
+                ========================== -->
+                <div class="coordenador-box">
+                    <h4>Administração de Laboratórios</h4>
+                    <div class="coordenador-form">
+                        <label for="laboratorio-select">Laboratório:</label>
+                        <select id="laboratorio-select">
+                            <option value="">Carregando laboratórios...</option>
+                        </select>
+
+                        <label for="status-laboratorio-select">Status:</label>
+                        <select id="status-laboratorio-select">
+                            <option value="disponivel">Disponível</option>
+                            <option value="em_uso">Em uso</option>
+                            <option value="manutencao">Em manutenção</option>
+                        </select>
+                        <p class="datas-lab-ajuda">
+                            Laboratórios "Em uso" ou "Em manutenção" não aceitam novas aulas nem eventos.
+                            Ao voltar para "Disponível" podem ser usados normalmente.
+                        </p>
+
+                        <button type="button" onclick="alterarStatusLaboratorio()">Salvar status</button>
+                        <p id="laboratorio-message"></p>
+                    </div>
+                </div>
+
+                </div>
+                <!-- fim #painel-editar-grade -->
+
+                <!-- =========================
+                     PAINEL: GERENCIAR EVENTOS
+                     (Agendar Evento/Prova + Eventos Cadastrados)
+                ========================== -->
+                <div id="painel-eventos" class="coordenador-subpanel" style="display: none;">
+                    <button type="button" class="btn-voltar-painel" onclick="mostrarPainelInicial()">← Voltar ao Painel</button>
+
+                <!-- =========================
+                     ADICIONAR EVENTO PERSONALIZADO
+                ========================== -->
+                <div class="coordenador-box">
+                    <h4 id="form-evento-title">Agendar Evento ou Prova Personalizada</h4>
+                    <div class="coordenador-form">
+
+                        <input type="hidden" id="evento-id-editar">
+
+                        <label for="evento-titulo">Evento / Disciplina:</label>
+                        <input type="text" id="evento-titulo" placeholder="Ex: Prova de Redes, Trabalho de Java, Apresentação do Projeto...">
+
+                        <label for="data-laboratorio">Data:</label>
+                        <input type="date" id="data-laboratorio">
+
+                        <div style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label for="evento-inicio">Horário de início:</label>
+                                <input type="time" id="evento-inicio">
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="evento-fim">Término:</label>
+                                <input type="time" id="evento-fim">
+                            </div>
+                        </div>
+
+                        <label for="evento-professor">Professor:</label>
+                        <select id="evento-professor">
+                            <option value="">Selecione o professor</option>
+                        </select>
+
+                        <label for="evento-sala">Sala:</label>
+                        <select id="evento-sala">
+                            <option value="">Selecione a sala</option>
+                        </select>
+
+                        <label for="evento-laboratorio">Laboratório:</label>
+                        <select id="evento-laboratorio">
+                            <option value="">Selecione o laboratório</option>
+                        </select>
+
+                        <label for="evento-semestre">Semestre:</label>
+                        <select id="evento-semestre" onchange="atualizarTurmasEvento()">
+                            <option value="">Selecione o semestre</option>
+                        </select>
+
+                        <label for="evento-turma">Turma:</label>
+                        <select id="evento-turma">
+                            <option value="">Selecione o semestre primeiro</option>
+                        </select>
+
+                        <button type="button" onclick="salvarEvento()" id="btn-salvar-evento">+ Adicionar Evento</button>
+                        <button type="button" onclick="cancelarEdicaoEvento()" id="btn-cancelar-evento" style="display: none; background-color: #777;">Cancelar Edição</button>
+                        <p id="data-message"></p>
+                    </div>
+                </div>
+
+                <!-- =========================
+                     DATAS CADASTRADAS
+                ========================== -->
+                <div class="coordenador-box">
+                    <h4>Eventos Cadastrados</h4>
+                    <div id="lista-datas-laboratorio" class="tabela-wrapper">
+                        <table class="schedule tabela-admin" id="tabela-eventos">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Dia da Semana</th>
+                                    <th>Horário</th>
+                                    <th>Evento / Disciplina</th>
+                                    <th>Professor</th>
+                                    <th>Sala</th>
+                                    <th>Laboratório</th>
+                                    <th>Semestre</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eventos-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                </div>
+                <!-- fim #painel-eventos -->
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =========================
+         RODAPÉ
+    ========================== -->
+    <footer>
+        <p>Não encontrou sua disciplina? Entre em contato com a Coordenação do Curso.</p>
+    </footer>
+
+</main>
+</body>
+</html>

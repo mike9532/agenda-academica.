@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Agenda Acadêmica</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body class="login-page">
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <div class="login-logo-wrap">
+                <img
+                    src="logo_anhanguera.png"
+                    alt="Logo Anhanguera"
+                    class="login-logo"
+                >
+            </div>
+
+            <h1>Portal Acadêmico</h1>
+
+            <p class="login-subtitle">
+                Agenda Acadêmica
+            </p>
+
+            <div class="login-form">
+
+                <div class="input-group">
+                    <label for="login-email">
+                        E-mail
+                    </label>
+
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input
+                            type="email"
+                            id="login-email"
+                            placeholder="Digite seu e-mail"
+                        >
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="login-senha">
+                        Senha
+                    </label>
+
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="login-senha"
+                            placeholder="Digite sua senha"
+                        >
+                    </div>
+                </div>
+
+                <button class="login-button" onclick="login()">
+                    Entrar
+                </button>
+
+                <p id="login-message"></p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
